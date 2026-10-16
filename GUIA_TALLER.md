@@ -264,7 +264,7 @@ dominio, puertos, nombres y documentación.
 
 ### 7.2 Microfrontend
 
-1. **Crear el proyecto** (ver `CREAR_MF.md`): `ng new` versión 20.3.14, sin
+1. **Crear el proyecto**: `ng new` versión 20.3.14, sin
    SSR, sin zoneless, SCSS, y agregar Module Federation:
 
    ```bash
