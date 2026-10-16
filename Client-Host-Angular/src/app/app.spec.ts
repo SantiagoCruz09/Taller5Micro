@@ -33,9 +33,9 @@ describe('App', () => {
         size: 2
       },
       navLinks: [
-        { text: 'Usuarios', url: '/users' },
-        { text: 'Productos', url: '/products' },
-        { text: 'Pedidos', url: '/orders' }
+        { text: 'Pedidos', url: '/orders' },
+        { text: 'Proveedores', url: '/suppliers' },
+        { text: 'Pagos', url: '/payments' }
       ]
     });
   });
