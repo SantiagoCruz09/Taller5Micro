@@ -18,7 +18,7 @@ import { AlertComponent } from '../../components/alert/alert.component';
  *
  */
 @Component({
-  selector: 'app-producs',
+  selector: 'app-products',
   templateUrl: `./products.page.html`,
   imports: [ProductsTableComponent, AlertComponent]
 })
