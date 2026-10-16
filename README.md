@@ -9,21 +9,21 @@ Puedes ver el paso a paso completo en [GUIA_TALLER.md](./GUIA_TALLER.md).
 
 ## Arquitectura
 
-| Proyecto                     | Rol                          | Puerto | Clave                                            |
-| ---------------------------- | ---------------------------- | ------ | ------------------------------------------------ |
-| Client-Host-Angular          | Host (navbar + router)       | 4200   | Carga los 3 remotes vía `loadRemoteModule`       |
-| Microfrontend-Users-Angular  | Microfront 1 (`mf-users`)    | 4201   | Expone `./UsersPage`                             |
-| Microfrontend-Products-Angular | Microfront 2 (`mf-products`) | 4202 | Expone `./ProductsPage`                          |
-| Microfrontend-Orders-Angular | Microfront 3 (`mf-orders`)   | 4203   | Expone `./OrdersPage`                            |
-| Microservice-Users-NodeJS    | Microservicio 1 (Users)      | 3001   | `GET /api/users/{countUsers}` + Swagger          |
-| Microservice-Products-NodeJS | Microservicio 2 (Products)   | 3002   | `GET /api/products/{countProducts}` + Swagger    |
-| Microservice-Orders-NodeJS   | Microservicio 3 (Orders)     | 3003   | `GET /api/orders/{countOrders}` + Swagger        |
+| Proyecto                        | Rol                            | Puerto | Clave                                         |
+| ------------------------------- | ------------------------------ | ------ | --------------------------------------------- |
+| Client-Host-Angular             | Host (navbar + router)         | 4200   | Carga los 3 remotes vía `loadRemoteModule`    |
+| Microfrontend-Orders-Angular    | Microfront 1 (`mf-orders`)     | 4201   | Expone `./OrdersPage`                         |
+| Microfrontend-Suppliers-Angular | Microfront 2 (`mf-suppliers`)  | 4202   | Expone `./SuppliersPage`                      |
+| Microfrontend-Payments-Angular  | Microfront 3 (`mf-payments`)   | 4203   | Expone `./PaymentsPage`                       |
+| Microservice-Orders-NodeJS      | Microservicio 1 (Orders)       | 3001   | `GET /api/orders/{countOrders}` + Swagger     |
+| Microservice-Suppliers-NodeJS   | Microservicio 2 (Suppliers)    | 3002   | `GET /api/suppliers/{countSuppliers}` + Swagger |
+| Microservice-Payments-NodeJS    | Microservicio 3 (Payments)     | 3003   | `GET /api/payments/{countPayments}` + Swagger |
 
 Cada Microfront consume exclusivamente su Microservicio:
 
-- Microfront Users (4201) → Microservice Users (3001)
-- Microfront Products (4202) → Microservice Products (3002)
-- Microfront Orders (4203) → Microservice Orders (3003)
+- Microfront Orders (4201) → Microservice Orders (3001)
+- Microfront Suppliers (4202) → Microservice Suppliers (3002)
+- Microfront Payments (4203) → Microservice Payments (3003)
 
 ## Requisitos previos
 
@@ -42,24 +42,24 @@ Puedes verificar Angular CLI en consola con: `ng version`
 Ubícate en la raíz de cada proyecto y ejecuta `npm i`:
 
 - `Client-Host-Angular`
-- `Microfrontend-Users-Angular`
-- `Microfrontend-Products-Angular`
 - `Microfrontend-Orders-Angular`
-- `Microservice-Users-NodeJS`
-- `Microservice-Products-NodeJS`
+- `Microfrontend-Suppliers-Angular`
+- `Microfrontend-Payments-Angular`
 - `Microservice-Orders-NodeJS`
+- `Microservice-Suppliers-NodeJS`
+- `Microservice-Payments-NodeJS`
 
 ### 2. Ejecutar los Proyectos
 
 Primero los microservicios, luego los microfronts y por último el host
 (en terminales separadas). En cada proyecto ejecuta: `npm run start`
 
-1. `Microservice-Users-NodeJS`
-2. `Microservice-Products-NodeJS`
-3. `Microservice-Orders-NodeJS`
-4. `Microfrontend-Users-Angular`
-5. `Microfrontend-Products-Angular`
-6. `Microfrontend-Orders-Angular`
+1. `Microservice-Orders-NodeJS`
+2. `Microservice-Suppliers-NodeJS`
+3. `Microservice-Payments-NodeJS`
+4. `Microfrontend-Orders-Angular`
+5. `Microfrontend-Suppliers-Angular`
+6. `Microfrontend-Payments-Angular`
 7. `Client-Host-Angular`
 
 > Nota: los microfronts deben estar arriba antes de navegar desde el Host,
@@ -67,35 +67,35 @@ Primero los microservicios, luego los microfronts y por último el host
 
 ### 3. Verificar Funcionamiento de Proyectos
 
-#### Microservice-Users-NodeJS
+#### Microservice-Orders-NodeJS
 
 - Corriendo en: `http://localhost:3001`
 - Swagger API Docs: `http://localhost:3001/api/docs`
-- API Users: `http://localhost:3001/api/users/{countUsers}`
+- API Orders: `http://localhost:3001/api/orders/{countOrders}`
 
-#### Microservice-Products-NodeJS
+#### Microservice-Suppliers-NodeJS
 
 - Corriendo en: `http://localhost:3002`
 - Swagger API Docs: `http://localhost:3002/api/docs`
-- API Products: `http://localhost:3002/api/products/{countProducts}`
+- API Suppliers: `http://localhost:3002/api/suppliers/{countSuppliers}`
 
-#### Microservice-Orders-NodeJS
+#### Microservice-Payments-NodeJS
 
 - Corriendo en: `http://localhost:3003`
 - Swagger API Docs: `http://localhost:3003/api/docs`
-- API Orders: `http://localhost:3003/api/orders/{countOrders}`
+- API Payments: `http://localhost:3003/api/payments/{countPayments}`
 
-#### Microfrontend-Users-Angular
+#### Microfrontend-Orders-Angular
 
 - Corriendo en: `http://localhost:4201`
 - RemoteEntry: `http://localhost:4201/remoteEntry.js`
 
-#### Microfrontend-Products-Angular
+#### Microfrontend-Suppliers-Angular
 
 - Corriendo en: `http://localhost:4202`
 - RemoteEntry: `http://localhost:4202/remoteEntry.js`
 
-#### Microfrontend-Orders-Angular
+#### Microfrontend-Payments-Angular
 
 - Corriendo en: `http://localhost:4203`
 - RemoteEntry: `http://localhost:4203/remoteEntry.js`
@@ -103,7 +103,7 @@ Primero los microservicios, luego los microfronts y por último el host
 #### Client-Host-Angular
 
 - Corriendo en: `http://localhost:4200`
-- Rutas: `/users`, `/products`, `/orders`
+- Rutas: `/orders`, `/suppliers`, `/payments`
 
 ## Pruebas unitarias y cobertura
 
@@ -113,12 +113,12 @@ Cada microfront usa **Jest** (`jest-preset-angular`) con cobertura habilitada:
 npm run test:coverage
 ```
 
-| Proyecto                      | Suites | Tests | Cobertura |
-| ----------------------------- | ------ | ----- | --------- |
-| Client-Host-Angular           | 1      | 5     | 100%      |
-| Microfrontend-Users-Angular   | 5      | 23    | 100%      |
-| Microfrontend-Products-Angular| 5      | 23    | 100%      |
-| Microfrontend-Orders-Angular  | 5      | 23    | 100%      |
+| Proyecto                        | Suites | Tests | Cobertura |
+| ------------------------------- | ------ | ----- | --------- |
+| Client-Host-Angular             | 1      | 5     | 100%      |
+| Microfrontend-Orders-Angular    | 5      | 23    | 100%      |
+| Microfrontend-Suppliers-Angular | 5      | 23    | 100%      |
+| Microfrontend-Payments-Angular  | 5      | 23    | 100%      |
 
 ## Documentación técnica
 

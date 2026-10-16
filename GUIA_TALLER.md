@@ -19,46 +19,41 @@ Construir una arquitectura distribuida con:
 - Pruebas unitarias con **Jest** y cobertura **superior al 90%**.
 - Control de versiones con **Git** y publicación en **GitHub**.
 
-En el repositorio base ya existían 2 pares completos (Users y Products).
-En esta iteración se agregó el tercer par (Orders), completando el taller.
+El repositorio final contiene 3 pares completos (**Orders**, **Suppliers** y
+**Payments**), todos construidos con el mismo patrón de capas descrito aquí.
 
 ---
 
 ## 2. Arquitectura y mapa de puertos
 
 ```
-                          ┌──────────────────────────────┐
-                          │   Client-Host-Angular :4200  │
-                          │  Navbar: Usuarios | Productos│
-                          │          | Pedidos           │
-                          └──────┬──────────┬────────────┘
-              loadRemoteModule   │          │   loadRemoteModule
-                 (Module Fed.)   │          │
-        ┌────────────────────────┘          └────────────────────────┐
-        ▼                                                            ▼
-┌───────────────────┐   HTTP GET   ┌───────────────────┐   HTTP GET   ┌───────────────────┐
-│  MF Users  :4201  │ ───────────▶ │  MS Users  :3001  │   ┌─────────▶│  MS Products :3002│
-│  ./UsersPage      │              │  /api/users/{n}   │   │          │ /api/products/{n} │
-└───────────────────┘              └───────────────────┘   │          └───────────────────┘
-┌───────────────────┐   HTTP GET                           │
-│ MF Products :4202 │ ─────────────────────────────────────┘
-│ ./ProductsPage    │
-└───────────────────┘
-┌───────────────────┐   HTTP GET   ┌───────────────────┐
-│  MF Orders :4203  │ ───────────▶ │  MS Orders :3003  │
-│  ./OrdersPage     │              │  /api/orders/{n}  │
-└───────────────────┘              └───────────────────┘
+                           ┌──────────────────────────────────────────┐
+                           │        Client-Host-Angular :4200         │
+                           │   Navbar: Pedidos | Proveedores | Pagos  │
+                           └──┬───────────────┬───────────────┬───────┘
+        loadRemoteModule      │               │               │  loadRemoteModule
+           (Module Fed.)      ▼               ▼               ▼
+      ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+      │ MF Orders :4201 │ │MF Suppliers:4202│ │MF Payments :4203│
+      │ ./OrdersPage    │ │./SuppliersPage  │ │./PaymentsPage   │
+      └────────┬────────┘ └────────┬────────┘ └────────┬────────┘
+               │ HTTP GET          │ HTTP GET          │ HTTP GET
+               ▼                   ▼                   ▼
+      ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+      │ MS Orders :3001 │ │MS Suppliers:3002│ │MS Payments :3003│
+      │/api/orders/{n}  │ │/api/suppliers/n │ │/api/payments/{n}│
+      └─────────────────┘ └─────────────────┘ └─────────────────┘
 ```
 
-| Proyecto                         | Rol                        | Puerto | Salida clave                          |
-| -------------------------------- | -------------------------- | ------ | ------------------------------------- |
-| `Client-Host-Angular`            | Host                       | 4200   | Rutas `/users`, `/products`, `/orders`|
-| `Microfrontend-Users-Angular`    | Remote `mf-users`          | 4201   | `./UsersPage` + `remoteEntry.js`      |
-| `Microfrontend-Products-Angular` | Remote `mf-products`       | 4202   | `./ProductsPage` + `remoteEntry.js`   |
-| `Microfrontend-Orders-Angular`   | Remote `mf-orders`         | 4203   | `./OrdersPage` + `remoteEntry.js`     |
-| `Microservice-Users-NodeJS`      | API REST + Swagger         | 3001   | `GET /api/users/{countUsers}`         |
-| `Microservice-Products-NodeJS`   | API REST + Swagger         | 3002   | `GET /api/products/{countProducts}`   |
-| `Microservice-Orders-NodeJS`     | API REST + Swagger         | 3003   | `GET /api/orders/{countOrders}`       |
+| Proyecto                         | Rol                        | Puerto | Salida clave                             |
+| -------------------------------- | -------------------------- | ------ | ---------------------------------------- |
+| `Client-Host-Angular`            | Host                       | 4200   | Rutas `/orders`, `/suppliers`, `/payments`|
+| `Microfrontend-Orders-Angular`   | Remote `mf-orders`         | 4201   | `./OrdersPage` + `remoteEntry.js`        |
+| `Microfrontend-Suppliers-Angular`| Remote `mf-suppliers`      | 4202   | `./SuppliersPage` + `remoteEntry.js`     |
+| `Microfrontend-Payments-Angular` | Remote `mf-payments`       | 4203   | `./PaymentsPage` + `remoteEntry.js`      |
+| `Microservice-Orders-NodeJS`     | API REST + Swagger         | 3001   | `GET /api/orders/{countOrders}`          |
+| `Microservice-Suppliers-NodeJS`  | API REST + Swagger         | 3002   | `GET /api/suppliers/{countSuppliers}`    |
+| `Microservice-Payments-NodeJS`   | API REST + Swagger         | 3003   | `GET /api/payments/{countPayments}`      |
 
 Los Microfronts comparten dependencias de Angular mediante
 `shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' })`
@@ -91,14 +86,14 @@ dentro de cada carpeta:
 
 ```bash
 # Microservicios
-cd Microservice-Users-NodeJS    && npm i
-cd Microservice-Products-NodeJS && npm i
-cd Microservice-Orders-NodeJS   && npm i
+cd Microservice-Orders-NodeJS    && npm i
+cd Microservice-Suppliers-NodeJS && npm i
+cd Microservice-Payments-NodeJS  && npm i
 
 # Microfronts
-cd Microfrontend-Users-Angular    && npm i
-cd Microfrontend-Products-Angular && npm i
-cd Microfrontend-Orders-Angular   && npm i
+cd Microfrontend-Orders-Angular    && npm i
+cd Microfrontend-Suppliers-Angular && npm i
+cd Microfrontend-Payments-Angular  && npm i
 
 # Host
 cd Client-Host-Angular && npm i
@@ -113,27 +108,27 @@ propia terminal con `npm run start`.
 
 ### Microservicios
 
-| Proyecto                     | API                                  | Swagger                     |
-| ---------------------------- | ------------------------------------ | --------------------------- |
-| Microservice-Users-NodeJS    | `http://localhost:3001/api/users/5`  | `http://localhost:3001/api/docs` |
-| Microservice-Products-NodeJS | `http://localhost:3002/api/products/5` | `http://localhost:3002/api/docs` |
-| Microservice-Orders-NodeJS   | `http://localhost:3003/api/orders/5` | `http://localhost:3003/api/docs` |
+| Proyecto                     | API                                     | Swagger                          |
+| ---------------------------- | --------------------------------------- | -------------------------------- |
+| Microservice-Orders-NodeJS   | `http://localhost:3001/api/orders/5`    | `http://localhost:3001/api/docs` |
+| Microservice-Suppliers-NodeJS| `http://localhost:3002/api/suppliers/5` | `http://localhost:3002/api/docs` |
+| Microservice-Payments-NodeJS | `http://localhost:3003/api/payments/5`  | `http://localhost:3003/api/docs` |
 
 Verificación con Navegador o curl:
 
 ```bash
-curl http://localhost:3003/api/orders/3
+curl http://localhost:3001/api/orders/3
 ```
 
 ### Microfronts (standalone)
 
-- `http://localhost:4201` (Users), `http://localhost:4202` (Products), `http://localhost:4203` (Orders)
-- Verifica que `http://localhost:4203/remoteEntry.js` responde (es el archivo
+- `http://localhost:4201` (Orders), `http://localhost:4202` (Suppliers), `http://localhost:4203` (Payments)
+- Verifica que `http://localhost:4201/remoteEntry.js` responde (es el archivo
   que consume el Host).
 
 ### Host
 
-- `http://localhost:4200` → navbar con **Usuarios**, **Productos** y **Pedidos**.
+- `http://localhost:4200` → navbar con **Pedidos**, **Proveedores** y **Pagos**.
 
 > Importante: si un microfront no está arriba, la ruta del Host que lo consume
 > fallará al descargar su `remoteEntry.js`. Levántalos todos antes de probar.
@@ -146,7 +141,7 @@ curl http://localhost:3003/api/orders/3
 
 ```
 Microservice-Orders-NodeJS/
-├── .env                                  # PORT=3003, PUBLIC_PATH="public"
+├── .env                                  # PORT=3001, PUBLIC_PATH="public"
 ├── public/index.html                     # Página informativa del microservicio
 ├── src/
 │   ├── app.ts                            # Punto de entrada (IIFE)
@@ -173,7 +168,7 @@ Microservice-Orders-NodeJS/
 
 ```
 Microfrontend-Orders-Angular/
-├── angular.json                          # builder ngx-build-plus + puerto 4203
+├── angular.json                          # builder ngx-build-plus + puerto 4201
 ├── webpack.config.js                     # name: mf-orders, expose ./OrdersPage
 ├── jest.config.js                        # preset jest-preset-angular
 ├── src/
@@ -193,10 +188,12 @@ Microfrontend-Orders-Angular/
 
 ---
 
-## 7. Cómo se construyó el tercer par (Orders) — guía replicable
+## 7. Cómo se construyeron los pares (Orders, Suppliers y Payments) — guía replicable
 
-Esta sección permite replicar el proceso para cualquier dominio nuevo
-(por ejemplo `Suppliers`, `Payments`, etc.).
+Esta sección explica el proceso seguido para construir cada par
+(Microfront + Microservicio) y permite replicarlo para cualquier dominio nuevo.
+Los pares Suppliers y Payments se crearon copiando el par Orders y ajustando
+dominio, puertos, nombres y documentación.
 
 ### 7.1 Microservicio
 
@@ -261,8 +258,8 @@ Esta sección permite replicar el proceso para cualquier dominio nuevo
 
    ```bash
    npm run start
-   # http://localhost:3003/api/orders/5
-   # http://localhost:3003/api/docs
+   # http://localhost:3001/api/orders/5
+   # http://localhost:3001/api/docs
    ```
 
 ### 7.2 Microfrontend
@@ -272,10 +269,10 @@ Esta sección permite replicar el proceso para cualquier dominio nuevo
 
    ```bash
    npx -p @angular/cli@20.3.14 ng new Microfrontend-Test-Angular
-   ng add @angular-architects/module-federation@20.0.0 --project Microfrontend-Test-Angular --port 4203
+   ng add @angular-architects/module-federation@20.0.0 --project Microfrontend-Test-Angular --port 4201
    ```
 
-2. **Configurar** `angular.json` (puerto `4203`, `publicHost`, outputPath) y
+2. **Configurar** `angular.json` (puerto `4201`, `publicHost`, outputPath) y
    `webpack.config.js`:
 
    ```js
@@ -297,7 +294,7 @@ Esta sección permite replicar el proceso para cualquier dominio nuevo
 
      ```ts
      getAllOrders(countOrders: number): Observable<Order[]> {
-       return this.httpClient.get<Order[]>(`http://localhost:3003/api/orders/${countOrders}`);
+       return this.httpClient.get<Order[]>(`http://localhost:3001/api/orders/${countOrders}`);
      }
      ```
 
@@ -308,7 +305,7 @@ Esta sección permite replicar el proceso para cualquier dominio nuevo
      `init → loading → success | error` y `@switch` en el template.
 
 4. **Exponer la página** (`./OrdersPage` en `webpack.config.js`) y verificar
-   `http://localhost:4203/remoteEntry.js`.
+   `http://localhost:4201/remoteEntry.js`.
 
 ### 7.3 Integración con el Host
 
@@ -320,7 +317,7 @@ Esta sección permite replicar el proceso para cualquier dominio nuevo
      loadComponent: () =>
        loadRemoteModule({
          type: 'module',
-         remoteEntry: 'http://localhost:4203/remoteEntry.js',
+         remoteEntry: 'http://localhost:4201/remoteEntry.js',
          exposedModule: './OrdersPage',
        }).then(m => m.OrdersPage),
    },
@@ -330,9 +327,9 @@ Esta sección permite replicar el proceso para cualquier dominio nuevo
 
    ```ts
    navLinks: [
-     { text: 'Usuarios', url: '/users' },
-     { text: 'Productos', url: '/products' },
      { text: 'Pedidos', url: '/orders' },
+     { text: 'Proveedores', url: '/suppliers' },
+     { text: 'Pagos', url: '/payments' },
    ]
    ```
 
@@ -369,13 +366,13 @@ La configuración vive en `jest.config.js` (`collectCoverage: true`,
 | Proyecto                        | Suites | Tests  | Cobertura (stmts/branch/func/lines) |
 | ------------------------------- | ------ | ------ | ----------------------------------- |
 | Client-Host-Angular             | 1      | 5      | 100 / 100 / 100 / 100               |
-| Microfrontend-Users-Angular     | 5      | 23     | 100 / 100 / 100 / 100               |
-| Microfrontend-Products-Angular  | 5      | 23     | 100 / 100 / 100 / 100               |
 | Microfrontend-Orders-Angular    | 5      | 23     | 100 / 100 / 100 / 100               |
+| Microfrontend-Suppliers-Angular | 5      | 23     | 100 / 100 / 100 / 100               |
+| Microfrontend-Payments-Angular  | 5      | 23     | 100 / 100 / 100 / 100               |
 
 > Regla de oro con `HttpTestingController`: el `expectOne` debe usar la **URL
 > absoluta** exacta que usa el servicio (ej.
-> `http://localhost:3003/api/orders/5`).
+> `http://localhost:3001/api/orders/5`).
 
 ---
 
@@ -413,9 +410,9 @@ npm run compodoc
 
 | Microservicio | Datos generados                                                                 |
 | ------------- | ------------------------------------------------------------------------------- |
-| Users         | `faker.person.firstName/lastName`, `faker.number.int`, `faker.internet.email`, ingeniería aleatoria |
-| Products      | `faker.commerce.productName/price`, categoría aleatoria                          |
 | Orders        | `faker.person.fullName`, `faker.internet.email`, `faker.commerce.productName`, cantidad, precio unitario, estado aleatorio, `faker.date.past()` |
+| Suppliers     | `faker.company.name`, `faker.person.fullName`, `faker.internet.email`, `faker.phone.number`, `faker.location.country`, categoría aleatoria |
+| Payments      | `faker.number.int` (orderId), `faker.person.fullName`, `faker.commerce.price` (monto), método y estado aleatorios, `faker.date.past()` |
 
 Patrón general:
 
@@ -467,8 +464,8 @@ git push origin master                           # o tu rama de trabajo
 | Requisito del taller                                   | Dónde se cumple                                                        |
 | ------------------------------------------------------ | ---------------------------------------------------------------------- |
 | Scaffolding completo de los proyectos                  | 7 proyectos con estructura por capas                                   |
-| 3 Microfronts independientes en Angular                | `Microfrontend-Users`, `-Products`, `-Orders-Angular`                  |
-| 3 Microservicios independientes en Node.js             | `Microservice-Users`, `-Products`, `-Orders-NodeJS`                    |
+| 3 Microfronts independientes en Angular                | `Microfrontend-Orders`, `-Suppliers`, `-Payments-Angular`              |
+| 3 Microservicios independientes en Node.js             | `Microservice-Orders`, `-Suppliers`, `-Payments-NodeJS`                |
 | Conexión MF ↔ MS por API REST                          | `services/*/*.service.ts` (4201→3001, 4202→3002, 4203→3003)            |
 | Renderizado correcto de la información                 | Tablas con badges + estados loading/error                              |
 | Interfaces y tipado fuerte                             | `interfaces/*.interface.ts` (MS y MF) + `strict: true`                 |
@@ -491,8 +488,8 @@ git push origin master                           # o tu rama de trabajo
    absoluta completa que solicita el servicio.
 
 2. **Swagger muestra el servidor equivocado**: revisa `servers[0].url` en
-   `src/config/swagger.ts` de cada microservicio (Users → 3001, Products →
-   3002, Orders → 3003).
+   `src/config/swagger.ts` de cada microservicio (Orders → 3001, Suppliers →
+   3002, Payments → 3003).
 
 3. **GET responde 201 (Created)**: un GET debe responder **200**. Se corrigió
    `res.status(201)` → `res.status(200)` en los controladores.
@@ -505,8 +502,8 @@ git push origin master                           # o tu rama de trabajo
    compara el objeto `navbarConfig` completo; actualízalo al agregar enlaces.
 
 6. **Título/selector copiados de otro proyecto** (p. ej. `<title>Microfrontend
-   Users</title>` en Products o `selector: 'app-producs'`): revisa estos
-   detalles al copiar proyectos.
+   Orders</title>` en Suppliers o `selector: 'app-orders'` en Payments): revisa
+   estos detalles al copiar proyectos.
 
 7. **Faker devuelve `undefined` en campos**: verifica el método de la versión
    instalada (`@faker-js/faker` v10). Ej.: `faker.date.past()` en lugar de
