@@ -25,7 +25,7 @@ npm run start
 ```
 
 El servidor se levanta en el puerto definido en `.env`
-(`PORT=3003`) mediante `ts-node-dev`, con recarga automática.
+(`PORT=3001`) mediante `ts-node-dev`, con recarga automática.
 
 ## Endpoints
 
@@ -37,7 +37,7 @@ El servidor se levanta en el puerto definido en `.env`
 ### Ejemplo
 
 ```bash
-curl http://localhost:3003/api/orders/5
+curl http://localhost:3001/api/orders/5
 ```
 
 ```json

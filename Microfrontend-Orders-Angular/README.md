@@ -2,7 +2,7 @@
 
 Microfrontend encargado de mostrar el listado de pedidos. Consume la
 API REST expuesta por `Microservice-Orders-NodeJS`
-(`http://localhost:3003/api/orders/{countOrders}`) y expone su página
+(`http://localhost:3001/api/orders/{countOrders}`) y expone su página
 como módulo federado (`./OrdersPage`) para el Host.
 
 ## Tecnologías
@@ -25,14 +25,14 @@ npm i
 npm run start
 ```
 
-- Aplicación standalone: `http://localhost:4203`
-- RemoteEntry (Module Federation): `http://localhost:4203/remoteEntry.js`
+- Aplicación standalone: `http://localhost:4201`
+- RemoteEntry (Module Federation): `http://localhost:4201/remoteEntry.js`
 
 ## Scripts
 
 | Script                   | Descripción                                   |
 | ------------------------ | --------------------------------------------- |
-| `npm run start`          | Levanta el microfrontend en el puerto 4203    |
+| `npm run start`          | Levanta el microfrontend en el puerto 4201    |
 | `npm run build`          | Compila el proyecto                           |
 | `npm run test`           | Ejecuta pruebas unitarias con Jest            |
 | `npm run test:coverage`  | Ejecuta pruebas generando reporte de cobertura |

@@ -44,7 +44,7 @@ describe('OrdersService', () => {
         expect(orders.length).toBe(mockOrders.length);
       });
 
-      const req = httpMock.expectOne(`http://localhost:3003/api/orders/${countOrders}`);
+      const req = httpMock.expectOne(`http://localhost:3001/api/orders/${countOrders}`);
       expect(req.request.method).toBe('GET');
 
       req.flush(mockOrders);
@@ -62,7 +62,7 @@ describe('OrdersService', () => {
         },
       });
 
-      const req = httpMock.expectOne(`http://localhost:3003/api/orders/${countOrders}`);
+      const req = httpMock.expectOne(`http://localhost:3001/api/orders/${countOrders}`);
 
       req.flush(
         { message: 'Error interno del servidor' },
