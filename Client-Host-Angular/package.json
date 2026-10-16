@@ -1,5 +1,5 @@
 {
-  "name": "angular-standalone-template",
+  "name": "client-host-angular",
   "version": "0.0.0",
   "scripts": {
     "start": "ng serve",
