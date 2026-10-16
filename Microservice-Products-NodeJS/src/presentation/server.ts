@@ -17,7 +17,7 @@ import { Options } from "../domain/interfaces/server.interface";
  * @example
  * ```ts
  * const server = new Server({
- *   port: 3001,
+ *   port: 3002,
  *   publicPath: 'public',
  *   routes: AppRoutes.routes
  * });
