@@ -1,0 +1,15 @@
+@switch(state){
+
+    @case('loading'){
+        <app-alert alertState="loading" text="Cargando Pagos..." ></app-alert>
+    }
+
+    @case('error'){
+        <app-alert alertState="error" text="Error al Cargar los Pagos" ></app-alert>
+    }
+
+    @case('success'){
+        <app-payments-table [payments]="payments" ></app-payments-table>
+    }
+
+}

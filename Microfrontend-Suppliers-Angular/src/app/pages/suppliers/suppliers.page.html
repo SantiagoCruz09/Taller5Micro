@@ -1,0 +1,15 @@
+@switch(state){
+
+    @case('loading'){
+        <app-alert alertState="loading" text="Cargando Proveedores..." ></app-alert>
+    }
+
+    @case('error'){
+        <app-alert alertState="error" text="Error al Cargar los Proveedores" ></app-alert>
+    }
+
+    @case('success'){
+        <app-suppliers-table [suppliers]="suppliers" ></app-suppliers-table>
+    }
+
+}

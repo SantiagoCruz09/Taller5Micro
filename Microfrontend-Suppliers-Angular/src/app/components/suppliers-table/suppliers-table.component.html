@@ -1,0 +1,31 @@
+<table class="table table-striped border">
+	<thead>
+		<tr>
+			<th scope="col">Id</th>
+			<th scope="col">Proveedor</th>
+			<th scope="col">Contacto</th>
+			<th scope="col">Email</th>
+			<th scope="col">Teléfono</th>
+			<th scope="col">País</th>
+			<th scope="col">Categoría</th>
+		</tr>
+	</thead>
+	<tbody>
+		@for (supplier of suppliers; track supplier) {
+			<tr>
+				<th scope="row">{{ supplier.id }}</th>
+				<td>{{ supplier.name }}</td>
+				<td>{{ supplier.contactName }}</td>
+				<td>{{ supplier.email }}</td>
+				<td>{{ supplier.phone }}</td>
+				<td>{{ supplier.country }}</td>
+				<td>
+					<dsb-badge-atom
+						[text]="supplier.category"
+						[type]="categoryMap[supplier.category]" >
+                    </dsb-badge-atom>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

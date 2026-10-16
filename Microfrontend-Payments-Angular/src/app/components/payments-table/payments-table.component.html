@@ -1,0 +1,31 @@
+<table class="table table-striped border">
+	<thead>
+		<tr>
+			<th scope="col">Id</th>
+			<th scope="col">Pedido</th>
+			<th scope="col">Cliente</th>
+			<th scope="col">Monto</th>
+			<th scope="col">Método</th>
+			<th scope="col">Fecha</th>
+			<th scope="col">Estado</th>
+		</tr>
+	</thead>
+	<tbody>
+		@for (payment of payments; track payment) {
+			<tr>
+				<th scope="row">{{ payment.id }}</th>
+				<td>{{ payment.orderId }}</td>
+				<td>{{ payment.customerName }}</td>
+				<td>{{ payment.amount | currency }}</td>
+				<td>{{ payment.method }}</td>
+				<td>{{ payment.paidAt | date: 'dd/MM/yyyy' }}</td>
+				<td>
+					<dsb-badge-atom
+						[text]="payment.status"
+						[type]="statusMap[payment.status]" >
+                    </dsb-badge-atom>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
